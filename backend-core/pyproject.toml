@@ -1,0 +1,14 @@
+[project]
+name = "backend-ws"
+version = "0.1.0"
+description = "NexCast Live Commentary Backend"
+readme = "README.md"
+requires-python = ">=3.11"
+dependencies = [
+    "fastapi[standard]>=0.121.1",
+    "python-dotenv>=1.2.1",
+    "xai-sdk>=1.4.0",
+    "google-genai>=1.0.0",
+    "google-cloud-texttospeech>=2.19.0",
+    "websockets>=14.1",
+]
