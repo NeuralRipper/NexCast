@@ -34,11 +34,8 @@ export const setAuthToken = (token: string | null) => {
 
 // Session preferences interface
 export interface SessionPreferences {
-  voice?: string;
-  commentary_style?: string;
-  speaking_rate?: number;
-  pitch?: number;
-  volume?: number;
+  speaker1_voice_id?: string;
+  speaker2_voice_id?: string; // Optional for dual commentary
   capture_interval?: number;
 }
 
