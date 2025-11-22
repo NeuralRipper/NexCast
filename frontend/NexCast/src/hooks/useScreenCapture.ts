@@ -14,10 +14,10 @@ export interface UseScreenCaptureReturn extends ScreenCaptureState {
 
 /**
  * Hook for capturing screen frames
- * @param captureInterval - Interval between captures in milliseconds (default: 2000ms)
+ * @param captureInterval - Interval between captures in milliseconds (default: 10000ms)
  */
 export const useScreenCapture = (
-  captureInterval: number = 5000
+  captureInterval: number = 10000
 ): UseScreenCaptureReturn => {
   const [isCapturing, setIsCapturing] = useState(false);
   const [frameCount, setFrameCount] = useState(0);

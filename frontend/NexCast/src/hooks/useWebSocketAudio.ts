@@ -8,7 +8,7 @@ export const useWebSocketAudio = () => {
     const audioContextRef = useRef<AudioContext | null>(null);
     const nextPlayTimeRef = useRef<number>(0);
     const audioQueueRef = useRef<AudioBuffer[]>([]);
-    const MAX_QUEUE_SIZE = 2;
+    const MAX_QUEUE_SIZE = 1;
 
     const playNextAudio = useCallback(() => {
         if (!audioContextRef.current || audioQueueRef.current.length === 0) return;

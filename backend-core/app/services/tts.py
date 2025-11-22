@@ -1,50 +1,75 @@
 """
-Google Cloud Text-to-Speech Service
-Gemini 2.5 Flash TTS - Multi-speaker, low latency
+ElevenLabs Text-to-Speech Service
+Using Eleven Turbo v2.5 for low latency
 """
-from google.cloud import texttospeech
+from elevenlabs import ElevenLabs
+from pathlib import Path
+from dotenv import load_dotenv
 import os
+
+# Load environment variables
+env_path = Path(__file__).parent.parent / "config" / ".env"
+load_dotenv(env_path)
 
 
 class TTSService:
     def __init__(self):
-        """Initialize Google Cloud TTS client"""
-        self._client = texttospeech.TextToSpeechClient()
+        """Initialize ElevenLabs client"""
+        self._client = ElevenLabs(api_key=os.getenv("ELEVENLABS_API_KEY"))
 
     async def synthesize(
         self,
         text: str,
-        speaking_rate: float = 1.0,
-        pitch: float = 0.0,
-        volume: int = 100
+        voice_id: str = "qVpGLzi5EhjW3WGVhOa9",  # American urban voice
+        voice_id_2: str | None = "gU0LNdkMOQCOrPrwtbee",  # British football announcer (optional)
+        stability: float = 0.5,
+        similarity_boost: float = 0.75
     ) -> bytes:
         """
-        Generate speech audio (multi-speaker supported)
+        Generate speech audio with ElevenLabs (supports multi-speaker)
 
         Args:
-            text: Multi-speaker format "[Mike] Text [Sarah] Text"
-            speaking_rate: 0.5 - 2.0
-            pitch: -20 to 20
-            volume: 0-100
+            text: Text with audio tags, use " | " to split speakers
+            voice_id: First speaker (American urban)
+            voice_id_2: Second speaker (optional, None for single speaker)
+            stability: 0-1 (lower = more emotion)
+            similarity_boost: 0-1 (higher = closer to original voice)
 
         Returns:
-            bytes: MP3 audio data (no file I/O)
+            bytes: MP3 audio data (concatenated if multi-speaker)
         """
-        # Map volume 0-100 to dB -8 to +8
-        volume_db = (volume / 100.0 * 16) - 8
+        # Check if multi-speaker (contains " | " and voice_id_2 is provided)
+        if " | " in text and voice_id_2:
+            parts = text.split(" | ", 1)
+            speaker1_text = parts[0].strip()
+            speaker2_text = parts[1].strip()
 
-        response = self._client.synthesize_speech(
-            input=texttospeech.SynthesisInput(text=text),
-            voice=texttospeech.VoiceSelectionParams(
-                language_code="en-US",
-                name="en-US-Neural2-A"
-            ),
-            audio_config=texttospeech.AudioConfig(
-                audio_encoding=texttospeech.AudioEncoding.MP3,
-                speaking_rate=speaking_rate,
-                pitch=pitch,
-                volume_gain_db=volume_db
+            # Synthesize speaker 1
+            audio1 = self._client.text_to_speech.convert(
+                text=speaker1_text,
+                voice_id=voice_id,
+                model_id="eleven_v3",
+                output_format="mp3_44100_128"
             )
-        )
+            audio1_bytes = b"".join(audio1)
 
-        return response.audio_content  # bytes - ready for streaming
+            # Synthesize speaker 2
+            audio2 = self._client.text_to_speech.convert(
+                text=speaker2_text,
+                voice_id=voice_id_2,
+                model_id="eleven_v3",
+                output_format="mp3_44100_128"
+            )
+            audio2_bytes = b"".join(audio2)
+
+            # Concatenate audio (simple append - no mixing)
+            return audio1_bytes + audio2_bytes
+        else:
+            # Single speaker
+            audio = self._client.text_to_speech.convert(
+                text=text,
+                voice_id=voice_id,
+                model_id="eleven_v3",
+                output_format="mp3_44100_128"
+            )
+            return b"".join(audio)

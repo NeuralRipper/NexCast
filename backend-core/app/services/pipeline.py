@@ -48,7 +48,7 @@ async def process_frame(
     Args:
         session_id: Session identifier for context tracking
         frame_base64: Base64-encoded JPEG frame
-        preferences: User preferences (speaking_rate, pitch, volume)
+        preferences: User preferences (voice, commentary_style)
 
     Returns:
         str: Base64-encoded MP3 audio
@@ -60,16 +60,19 @@ async def process_frame(
 
     # 2. LLM: Description -> Commentary
     llm = get_llm_service()
-    comment = await llm.generate_comment(description)
+    speaker2 = preferences.get("speaker2_voice_id")
+    dual_speaker = bool(speaker2)  # True if speaker2 is set
+    comment = await llm.generate_comment(description, dual_speaker=dual_speaker)
     print(f"[{session_id}] Comment: {comment}")
 
-    # 3. TTS: Commentary -> Audio
+    # 3. TTS: Commentary -> Audio (ElevenLabs multi-speaker)
     tts = get_tts_service()
+    speaker1 = preferences.get("speaker1_voice_id", "qVpGLzi5EhjW3WGVhOa9")
+
     audio_bytes = await tts.synthesize(
         text=comment,
-        speaking_rate=preferences.get("speaking_rate", 1.0),
-        pitch=preferences.get("pitch", 0.0),
-        volume=preferences.get("volume", 100)
+        voice_id=speaker1,
+        voice_id_2=speaker2 if dual_speaker else None
     )
 
     # Convert to base64 for WebSocket transmission

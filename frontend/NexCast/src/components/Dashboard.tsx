@@ -4,18 +4,11 @@ import { useScreenCapture } from '../hooks/useScreenCapture';
 import { useWebSocketAudio } from '../hooks/useWebSocketAudio';
 
 
-// Available Google TTS voices
-const VOICE_OPTIONS = [
-  { value: 'en-US-Neural2-A', label: 'Male (Neural2-A)' },
-  { value: 'en-US-Neural2-D', label: 'Female (Neural2-D)' },
-  { value: 'en-US-Neural2-C', label: 'Female (Neural2-C)' },
-  { value: 'en-US-Neural2-J', label: 'Male (Neural2-J)' },
-];
-
-const STYLE_OPTIONS = [
-  { value: 'excited', label: 'Excited' },
-  { value: 'analytical', label: 'Analytical' },
-  { value: 'humorous', label: 'Humorous' },
+// Capture interval options
+const INTERVAL_OPTIONS = [
+  { value: 10000, label: '10s (Fast)' },
+  { value: 20000, label: '20s (Balanced)' },
+  { value: 30000, label: '30s (Slow)' },
 ];
 
 export const Dashboard = () => {
@@ -30,16 +23,13 @@ export const Dashboard = () => {
 
   // Preferences state
   const [preferences, setPreferences] = useState<SessionPreferences>({
-    voice: 'en-US-Neural2-A',
-    commentary_style: 'excited',
-    speaking_rate: 1.0,
-    pitch: 0.0,
-    volume: 100,
-    capture_interval: 3000,
+    speaker1_voice_id: 'qVpGLzi5EhjW3WGVhOa9',  // American Urban (default)
+    speaker2_voice_id: 'gU0LNdkMOQCOrPrwtbee',  // British Announcer (default)
+    capture_interval: 10000,
   });
 
   // Screen capture hook
-  const capture = useScreenCapture(preferences.capture_interval || 3000);
+  const capture = useScreenCapture(preferences.capture_interval || 10000);
 
   // Timer ref
   const timerIntervalRef = useRef<NodeJS.Timeout | null>(null);
@@ -239,158 +229,59 @@ export const Dashboard = () => {
             <h2 className="text-xl font-semibold mb-4">Preferences</h2>
 
             <div className="space-y-4">
-              {/* Voice Selection */}
+              {/* Speaker 1 Voice */}
               <div>
                 <label className="block text-sm font-medium text-gray-700 mb-2">
-                  Voice
-                </label>
-                <select
-                  value={preferences.voice}
-                  onChange={(e) =>
-                    setPreferences({ ...preferences, voice: e.target.value })
-                  }
-                  disabled={isSessionActive}
-                  className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500 disabled:bg-gray-100 disabled:cursor-not-allowed text-gray-900 bg-white"
-                >
-                  {VOICE_OPTIONS.map((option) => (
-                    <option key={option.value} value={option.value}>
-                      {option.label}
-                    </option>
-                  ))}
-                </select>
-              </div>
-
-              {/* Commentary Style */}
-              <div>
-                <label className="block text-sm font-medium text-gray-700 mb-2">
-                  Commentary Style
-                </label>
-                <select
-                  value={preferences.commentary_style}
-                  onChange={(e) =>
-                    setPreferences({
-                      ...preferences,
-                      commentary_style: e.target.value,
-                    })
-                  }
-                  disabled={isSessionActive}
-                  className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500 disabled:bg-gray-100 disabled:cursor-not-allowed text-gray-900 bg-white"
-                >
-                  {STYLE_OPTIONS.map((option) => (
-                    <option key={option.value} value={option.value}>
-                      {option.label}
-                    </option>
-                  ))}
-                </select>
-              </div>
-
-              {/* Speaking Rate */}
-              <div>
-                <label className="block text-sm font-medium text-gray-700 mb-2">
-                  Speaking Rate: {preferences.speaking_rate}x
+                  Speaker 1 (American)
                 </label>
                 <input
-                  type="range"
-                  min="0.5"
-                  max="2.0"
-                  step="0.1"
-                  value={preferences.speaking_rate}
+                  type="text"
+                  value={preferences.speaker1_voice_id}
                   onChange={(e) =>
-                    setPreferences({
-                      ...preferences,
-                      speaking_rate: parseFloat(e.target.value),
-                    })
+                    setPreferences({ ...preferences, speaker1_voice_id: e.target.value })
                   }
                   disabled={isSessionActive}
-                  className="w-full disabled:opacity-50 disabled:cursor-not-allowed"
+                  placeholder="Voice ID"
+                  className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500 disabled:bg-gray-100 disabled:cursor-not-allowed text-gray-900 bg-white text-sm font-mono"
                 />
-                <div className="flex justify-between text-xs text-gray-500">
-                  <span>0.5x</span>
-                  <span>1.0x</span>
-                  <span>2.0x</span>
-                </div>
               </div>
 
-              {/* Pitch */}
+              {/* Speaker 2 Voice */}
               <div>
                 <label className="block text-sm font-medium text-gray-700 mb-2">
-                  Pitch: {preferences.pitch > 0 ? '+' : ''}
-                  {preferences.pitch}
+                  Speaker 2 (British) - Optional
                 </label>
                 <input
-                  type="range"
-                  min="-5"
-                  max="5"
-                  step="0.5"
-                  value={preferences.pitch}
+                  type="text"
+                  value={preferences.speaker2_voice_id || ''}
                   onChange={(e) =>
-                    setPreferences({
-                      ...preferences,
-                      pitch: parseFloat(e.target.value),
-                    })
+                    setPreferences({ ...preferences, speaker2_voice_id: e.target.value || undefined })
                   }
                   disabled={isSessionActive}
-                  className="w-full disabled:opacity-50 disabled:cursor-not-allowed"
+                  placeholder="Voice ID (leave empty for single speaker)"
+                  className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500 disabled:bg-gray-100 disabled:cursor-not-allowed text-gray-900 bg-white text-sm font-mono"
                 />
-                <div className="flex justify-between text-xs text-gray-500">
-                  <span>Lower</span>
-                  <span>Normal</span>
-                  <span>Higher</span>
-                </div>
-              </div>
-
-              {/* Volume */}
-              <div>
-                <label className="block text-sm font-medium text-gray-700 mb-2">
-                  Volume: {preferences.volume}%
-                </label>
-                <input
-                  type="range"
-                  min="0"
-                  max="100"
-                  step="5"
-                  value={preferences.volume}
-                  onChange={(e) =>
-                    setPreferences({
-                      ...preferences,
-                      volume: parseInt(e.target.value),
-                    })
-                  }
-                  disabled={isSessionActive}
-                  className="w-full disabled:opacity-50 disabled:cursor-not-allowed"
-                />
-                <div className="flex justify-between text-xs text-gray-500">
-                  <span>0%</span>
-                  <span>50%</span>
-                  <span>100%</span>
-                </div>
               </div>
 
               {/* Capture Interval */}
               <div>
                 <label className="block text-sm font-medium text-gray-700 mb-2">
-                  Capture Interval: {(preferences.capture_interval || 3000) / 1000}s
+                  Capture Interval
                 </label>
-                <input
-                  type="range"
-                  min="5000"
-                  max="10000"
-                  step="500"
-                  value={preferences.capture_interval || 7500}
+                <select
+                  value={preferences.capture_interval}
                   onChange={(e) =>
-                    setPreferences({
-                      ...preferences,
-                      capture_interval: parseInt(e.target.value),
-                    })
+                    setPreferences({ ...preferences, capture_interval: parseInt(e.target.value) })
                   }
                   disabled={isSessionActive}
-                  className="w-full disabled:opacity-50 disabled:cursor-not-allowed"
-                />
-                <div className="flex justify-between text-xs text-gray-500">
-                  <span>5s (Fast)</span>
-                  <span>7.5s</span>
-                  <span>10s (Slow)</span>
-                </div>
+                  className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500 disabled:bg-gray-100 disabled:cursor-not-allowed text-gray-900 bg-white"
+                >
+                  {INTERVAL_OPTIONS.map((option) => (
+                    <option key={option.value} value={option.value}>
+                      {option.label}
+                    </option>
+                  ))}
+                </select>
               </div>
             </div>
 
