@@ -1,4 +1,9 @@
-import axios, { AxiosInstance } from 'axios';
+import axios, { type AxiosInstance } from 'axios';
+import type {
+  SessionPreferences,
+  StartSessionResponse,
+  EndSessionResponse,
+} from '../interfaces/session';
 
 const API_BASE_URL = import.meta.env.VITE_API_GATEWAY_URL;
 
@@ -32,13 +37,6 @@ export const setAuthToken = (token: string | null) => {
   }
 };
 
-// Session preferences interface
-export interface SessionPreferences {
-  speaker1_voice_id?: string;
-  speaker2_voice_id?: string; // Optional for dual commentary
-  capture_interval?: number;
-}
-
 export interface Session {
   session_id: number;
   started_at: string;
@@ -70,11 +68,7 @@ export const api = {
   /**
    * Start a new session with preferences
    */
-  async startSession(preferences?: SessionPreferences): Promise<{
-    session_id: number;
-    status: string;
-    preferences: SessionPreferences;
-  }> {
+  async startSession(preferences?: SessionPreferences): Promise<StartSessionResponse> {
     const response = await apiClient.post('/session/start', {
       preferences: preferences || {},
     });
@@ -87,11 +81,7 @@ export const api = {
   async endSession(
     sessionId: number,
     frameCount: number = 0
-  ): Promise<{
-    session_id: number;
-    status: string;
-    frame_count: number;
-  }> {
+  ): Promise<EndSessionResponse> {
     const response = await apiClient.post('/session/end', {
       session_id: sessionId,
       frame_count: frameCount,

@@ -1,7 +1,8 @@
 import { useCallback, useRef, useState } from "react";
-import type { SessionPreferences } from "../services/api";
+import type { SessionPreferences } from "../interfaces/session";
+import type { UseWebSocketAudioReturn } from "../interfaces/websocket";
 
-export const useWebSocketAudio = () => {
+export const useWebSocketAudio = (): UseWebSocketAudioReturn => {
     const [isConnected, setIsConnected] = useState(false);
     const [error, setError] = useState<string | null>(null);
     const wsRef = useRef<WebSocket | null>(null);
