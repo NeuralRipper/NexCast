@@ -6,6 +6,8 @@ export interface SessionPreferences {
   speaker1_voice_id?: string;
   speaker2_voice_id?: string;
   capture_interval?: number;
+  player_name?: string;
+  context?: string;
 }
 
 export interface Session {

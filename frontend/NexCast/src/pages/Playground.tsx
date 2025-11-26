@@ -22,6 +22,8 @@ export const Playground = () => {
     speaker1_voice_id: 'qVpGLzi5EhjW3WGVhOa9', // American Urban (default)
     speaker2_voice_id: 'gU0LNdkMOQCOrPrwtbee', // British Announcer (default)
     capture_interval: 10000,
+    player_name: '',
+    context: 'Professional esports commentary for a competitive gaming match. Provide exciting, insightful analysis of gameplay, strategy, and player performance.',
   });
 
   // Screen capture hook

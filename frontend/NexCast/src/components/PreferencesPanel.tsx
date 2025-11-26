@@ -83,6 +83,40 @@ export const PreferencesPanel = ({
       <CardContent className="space-y-4">
         <div className="space-y-3">
           <div className="space-y-2">
+            <label htmlFor="playerName" className="text-sm font-medium text-gray-300">
+              Player Name <span className="text-gray-500">(Optional)</span>
+            </label>
+            <input
+              id="playerName"
+              type="text"
+              value={preferences.player_name || ''}
+              onChange={(e) =>
+                onPreferencesChange({ ...preferences, player_name: e.target.value })
+              }
+              disabled={isSessionActive}
+              placeholder="Enter player name..."
+              className="flex h-9 w-full rounded-md border border-gray-600 bg-gray-700 px-3 py-2 text-sm text-white placeholder:text-gray-500 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-blue-500 disabled:cursor-not-allowed disabled:opacity-50"
+            />
+          </div>
+
+          <div className="space-y-2">
+            <label htmlFor="context" className="text-sm font-medium text-gray-300">
+              Commentary Context
+            </label>
+            <textarea
+              id="context"
+              value={preferences.context || ''}
+              onChange={(e) =>
+                onPreferencesChange({ ...preferences, context: e.target.value })
+              }
+              disabled={isSessionActive}
+              placeholder="Describe the commentary style and context..."
+              rows={3}
+              className="flex w-full rounded-md border border-gray-600 bg-gray-700 px-3 py-2 text-sm text-white placeholder:text-gray-500 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-blue-500 disabled:cursor-not-allowed disabled:opacity-50 resize-none"
+            />
+          </div>
+
+          <div className="space-y-2">
             <label htmlFor="speaker1" className="text-sm font-medium text-gray-300">
               Speaker 1
             </label>
