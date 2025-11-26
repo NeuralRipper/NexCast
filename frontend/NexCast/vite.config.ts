@@ -1,3 +1,4 @@
+import path from "path"
 import { defineConfig } from 'vite'
 import react from '@vitejs/plugin-react-swc'
 import basicSsl from '@vitejs/plugin-basic-ssl'
@@ -10,6 +11,11 @@ export default defineConfig({
     basicSsl(),
     tailwindcss(),
   ],
+  resolve: {
+    alias: {
+      "@": path.resolve(__dirname, "./src"),
+    },
+  },
   server: {
     https: true
   }

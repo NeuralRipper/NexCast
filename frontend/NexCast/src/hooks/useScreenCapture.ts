@@ -1,16 +1,5 @@
 import { useState, useRef, useCallback, useEffect } from 'react';
-
-export interface ScreenCaptureState {
-  isCapturing: boolean;
-  frameCount: number;
-  currentFrame: string | null; // Base64 image data
-  error: string | null;
-}
-
-export interface UseScreenCaptureReturn extends ScreenCaptureState {
-  startCapture: () => Promise<void>;
-  stopCapture: () => void;
-}
+import type { UseScreenCaptureReturn } from '../interfaces/capture';
 
 /**
  * Hook for capturing screen frames

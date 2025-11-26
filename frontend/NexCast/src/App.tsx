@@ -1,75 +1,31 @@
 import { useAuth } from 'react-oidc-context'
-import { useEffect, useState } from 'react'
+import { useEffect } from 'react'
+import { BrowserRouter, Routes, Route, Navigate } from 'react-router-dom'
 import { setAuthToken } from './services/api'
-import Dashboard from './components/Dashboard'
-import History from './components/History'
+import { SideBar } from './components/SideBar'
+import Playground from './pages/Playground'
+import SessionHistory from './pages/SessionHistory'
+import { About } from './pages/About'
 import './App.css'
 
-type View = 'dashboard' | 'history'
-
-interface AuthenticatedAppProps {
-  signOut: () => void
-  userEmail?: string
-}
-
-function AuthenticatedApp({ signOut, userEmail }: AuthenticatedAppProps) {
-  const [currentView, setCurrentView] = useState<View>('dashboard')
-
+function AuthenticatedApp() {
   return (
-    <div className="min-h-screen bg-gray-100">
-      {/* Navigation Bar */}
-      <nav className="bg-white shadow-md">
-        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-          <div className="flex justify-between items-center h-16">
-            {/* Logo */}
-            <div className="flex-shrink-0">
-              <h1 className="text-2xl font-bold text-blue-600">NexCast</h1>
-            </div>
+    <BrowserRouter>
+      <div className="h-full w-full flex overflow-hidden bg-gray-900">
+        {/* Sidebar */}
+        <SideBar />
 
-            {/* Navigation Links */}
-            <div className="flex space-x-4">
-              <button
-                onClick={() => setCurrentView('dashboard')}
-                className={`px-3 py-2 rounded-md text-sm font-medium transition ${
-                  currentView === 'dashboard'
-                    ? 'bg-blue-100 text-blue-700'
-                    : 'text-gray-700 hover:bg-gray-100'
-                }`}
-              >
-                Dashboard
-              </button>
-              <button
-                onClick={() => setCurrentView('history')}
-                className={`px-3 py-2 rounded-md text-sm font-medium transition ${
-                  currentView === 'history'
-                    ? 'bg-blue-100 text-blue-700'
-                    : 'text-gray-700 hover:bg-gray-100'
-                }`}
-              >
-                History
-              </button>
-            </div>
-
-            {/* User Menu */}
-            <div className="flex items-center space-x-4">
-              <span className="text-sm text-gray-700">{userEmail}</span>
-              <button
-                onClick={signOut}
-                className="px-4 py-2 bg-red-500 hover:bg-red-600 text-white rounded-md text-sm font-medium transition"
-              >
-                Sign Out
-              </button>
-            </div>
-          </div>
-        </div>
-      </nav>
-
-      {/* Main Content */}
-      <main className="py-6">
-        {currentView === 'dashboard' && <Dashboard />}
-        {currentView === 'history' && <History />}
-      </main>
-    </div>
+        {/* Main Content */}
+        <main className="flex-1 overflow-y-auto p-8 bg-gray-900">
+          <Routes>
+            <Route path="/playground" element={<Playground />} />
+            <Route path="/history" element={<SessionHistory />} />
+            <Route path="/settings" element={<About />} />
+            <Route path="/" element={<Navigate to="/playground" replace />} />
+          </Routes>
+        </main>
+      </div>
+    </BrowserRouter>
   )
 }
 
@@ -85,14 +41,6 @@ function App() {
     }
   }, [auth.isAuthenticated, auth.user])
 
-  const signOutRedirect = async () => {
-    await auth.removeUser()
-    const clientId = import.meta.env.VITE_COGNITO_CLIENT_ID
-    const logoutUri = `${window.location.origin}/`
-    const cognitoDomain = import.meta.env.VITE_COGNITO_DOMAIN
-    window.location.href = `${cognitoDomain}/logout?client_id=${clientId}&logout_uri=${encodeURIComponent(logoutUri)}`
-  }
-
   if (auth.isLoading) {
     return <div>Loading...</div>
   }
@@ -102,14 +50,24 @@ function App() {
   }
 
   if (auth.isAuthenticated) {
-    return <AuthenticatedApp signOut={signOutRedirect} userEmail={auth.user?.profile.email} />
+    return <AuthenticatedApp />
   }
 
   return (
-    <div className="container">
-      <h1>NexCast - Live Gaming Commentary</h1>
-      <p>Sign in to start your live commentary session</p>
-      <button className='text-cyan-500' onClick={() => auth.signinRedirect()}>Sign In</button>
+    // back ground gradiant color, from bottom left to the other side
+    <div className="h-screen w-screen bg-linear-to-bl from-gray-100 to-gray-800 flex items-center justify-center">
+      <div className="w-full max-w-md mx-4 bg-gray-800 rounded-xl shadow-lg border border-gray-200 p-8 text-center">
+        <div className="mb-3">
+          <h1 className="text-4xl font-bold text-gray-100 mb-1">NexCast</h1>
+          <p className="text-xl text-gray-100">Live Gaming Commentary</p>
+        </div>
+        <button
+          className="w-full bg-gray-800 hover:bg-gray-800 text-gray-100 font-medium py-3 px-6 rounded-lg transition-colors"
+          onClick={() => auth.signinRedirect()}
+        >
+          Sign In with Cognito
+        </button>
+      </div>
     </div>
   )
 }
