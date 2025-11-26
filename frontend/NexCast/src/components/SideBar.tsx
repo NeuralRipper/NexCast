@@ -1,24 +1,23 @@
 import { NavLink } from 'react-router-dom';
-import { Play, History, Mic2, Settings } from 'lucide-react';
+import { Play, History, Settings } from 'lucide-react';
 
 export const SideBar = () => {
   const navItems = [
     { path: '/playground', label: 'Playground', Icon: Play },
     { path: '/history', label: 'Session History', Icon: History },
-    { path: '/library', label: 'Voice Library', Icon: Mic2 },
     { path: '/settings', label: 'Settings', Icon: Settings },
   ];
 
   return (
-    <aside className="w-64 border-r border-gray-600 h-screen flex flex-col">
+    <aside className="w-64 border-r border-gray-700 bg-gray-800 h-screen flex flex-col flex-shrink-0">
       {/* Logo/Brand */}
-      <div className="px-6 py-5 border-b border-gray-800">
-        <h1 className="text-xl font-bold text-gray-300">NexCast</h1>
-        <p className="text-xl text-gray-500 mt-0.5">Live Commentary</p>
+      <div className="border-b border-gray-700 p-6">
+        <h1 className="text-4xl font-bold text-gray-400 text-center">NexCast</h1>
+        <p className="text-xl text-gray-400 text-center">Live Commentary</p>
       </div>
 
       {/* Navigation */}
-      <nav className="flex-1 p-3">
+      <nav className="flex-1 p-4">
         <ul className="space-y-1">
           {navItems.map((item) => {
             const Icon = item.Icon;
@@ -27,10 +26,10 @@ export const SideBar = () => {
                 <NavLink
                   to={item.path}
                   className={({ isActive }) =>
-                    `flex items-center gap-3 px-3 py-2 rounded-md text-xl font-medium transition-all no-underline ${
+                    `flex items-center gap-3 px-4 py-2.5 rounded-lg text-xl font-medium transition-colors no-underline ${
                       isActive
-                        ? 'bg-gray-800 text-gray-50 border border-gray-700'
-                        : 'text-gray-400 hover:bg-gray-800 hover:text-gray-50 border border-transparent'
+                        ? 'bg-primary text-primary-foreground'
+                        : 'text-muted-foreground hover:bg-accent hover:text-accent-foreground'
                     }`
                   }
                 >
@@ -44,8 +43,8 @@ export const SideBar = () => {
       </nav>
 
       {/* Footer */}
-      <div className="px-6 py-4 border-t border-gray-800">
-        <p className="text-xs text-gray-600">© 2025 NexCast</p>
+      <div className="px-6 py-4 border-t border-border">
+        <p className="text-xs text-muted-foreground">© 2025 NexCast</p>
       </div>
     </aside>
   );

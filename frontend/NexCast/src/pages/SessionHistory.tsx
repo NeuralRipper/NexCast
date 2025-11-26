@@ -1,4 +1,6 @@
 import { useState, useEffect } from 'react';
+import { Card, CardContent } from '@/components/ui/card';
+import { Button } from '@/components/ui/button';
 import { api, type Session } from '../services/api';
 
 export const SessionHistory = () => {
@@ -46,21 +48,23 @@ export const SessionHistory = () => {
 
   return (
     <div className="h-full w-full overflow-y-auto">
-      <div className="w-full max-w-7xl mx-auto p-6">
         <div className="flex items-center justify-between mb-6">
-          <h1 className="text-2xl font-bold text-gray-50">Session History</h1>
-          <button
+          <div>
+            <h1 className="text-3xl font-bold tracking-tight">Session History</h1>
+            <p className="text-muted-foreground mt-1">View and manage your commentary sessions</p>
+          </div>
+          <Button
             onClick={loadSessions}
             disabled={isLoading}
-            className="px-4 py-2 bg-gray-800 hover:bg-gray-700 text-gray-800 rounded-lg text-sm font-medium disabled:opacity-50 transition"
+            variant="outline"
           >
             {isLoading ? 'Refreshing...' : 'Refresh'}
-          </button>
+          </Button>
         </div>
 
         {/* Error Display */}
         {error && (
-          <div className="bg-red-900/20 border border-red-800 text-red-300 px-4 py-3 rounded-lg mb-4">
+          <div className="bg-destructive/15 border border-destructive text-destructive px-4 py-3 rounded-lg mb-6">
             <strong>Error:</strong> {error}
           </div>
         )}
@@ -68,80 +72,77 @@ export const SessionHistory = () => {
         {/* Loading State */}
         {isLoading && !error && (
           <div className="flex items-center justify-center py-12">
-            <div className="text-gray-400">Loading sessions...</div>
+            <div className="text-muted-foreground">Loading sessions...</div>
           </div>
         )}
 
         {/* Sessions List */}
         {!isLoading && !error && (
-          <div className="bg-gray-800 rounded-lg shadow-sm border border-gray-700 overflow-hidden">
+          <div className="space-y-4">
             {sessions.length === 0 ? (
-              <div className="text-center py-12 text-gray-400">
-                No sessions found. Start a session in the Playground to see it here.
-              </div>
+              <Card>
+                <CardContent className="flex flex-col items-center justify-center py-16">
+                  <p className="text-muted-foreground text-center">
+                    No sessions found. Start a session in the Playground to see it here.
+                  </p>
+                </CardContent>
+              </Card>
             ) : (
-              <table className="w-full">
-                <thead className="bg-gray-800/50 border-b border-gray-700">
-                  <tr>
-                    <th className="px-6 py-3 text-left text-xs font-medium text-gray-400 uppercase tracking-wider">
-                      Session ID
-                    </th>
-                    <th className="px-6 py-3 text-left text-xs font-medium text-gray-400 uppercase tracking-wider">
-                      Started
-                    </th>
-                    <th className="px-6 py-3 text-left text-xs font-medium text-gray-400 uppercase tracking-wider">
-                      Duration
-                    </th>
-                    <th className="px-6 py-3 text-left text-xs font-medium text-gray-400 uppercase tracking-wider">
-                      Frames
-                    </th>
-                    <th className="px-6 py-3 text-left text-xs font-medium text-gray-400 uppercase tracking-wider">
-                      Status
-                    </th>
-                    <th className="px-6 py-3 text-left text-xs font-medium text-gray-400 uppercase tracking-wider">
-                      Speakers
-                    </th>
-                  </tr>
-                </thead>
-                <tbody className="bg-gray-800 divide-y divide-gray-700">
-                  {sessions.map((session) => (
-                    <tr key={session.session_id} className="hover:bg-gray-700 transition">
-                      <td className="px-6 py-4 whitespace-nowrap text-sm font-medium text-gray-200">
-                        #{session.session_id}
-                      </td>
-                      <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-300">
-                        {formatDate(session.started_at)}
-                      </td>
-                      <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-300">
-                        {formatDuration(session.duration)}
-                      </td>
-                      <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-300">
-                        {session.frame_count}
-                      </td>
-                      <td className="px-6 py-4 whitespace-nowrap">
+              sessions.map((session) => (
+                <Card key={session.session_id} className="hover:bg-accent/50 transition-colors">
+                  <CardContent className="p-6">
+                    <div className="flex items-center justify-between gap-6">
+                      <div className="flex items-center gap-6 flex-1">
+                        <div className="space-y-0.5 min-w-[100px]">
+                          <p className="text-xs text-muted-foreground">Session</p>
+                          <p className="text-sm font-semibold">#{session.session_id}</p>
+                        </div>
+                        <div className="space-y-0.5 min-w-[160px]">
+                          <p className="text-xs text-muted-foreground">Started</p>
+                          <p className="text-sm">{formatDate(session.started_at)}</p>
+                        </div>
+                        <div className="space-y-0.5 min-w-[100px]">
+                          <p className="text-xs text-muted-foreground">Duration</p>
+                          <p className="text-sm font-mono">{formatDuration(session.duration)}</p>
+                        </div>
+                        <div className="space-y-0.5 min-w-[80px]">
+                          <p className="text-xs text-muted-foreground">Frames</p>
+                          <p className="text-sm">{session.frame_count}</p>
+                        </div>
+                        <div className="space-y-0.5 min-w-[100px]">
+                          <p className="text-xs text-muted-foreground">Speakers</p>
+                          <p className="text-sm">
+                            {session.preferences.speaker2_voice_id ? 'Dual' : 'Single'}
+                          </p>
+                        </div>
+                      </div>
+                      <div className="flex items-center gap-3">
                         <span
-                          className={`px-2 py-1 inline-flex text-xs leading-5 font-semibold rounded-full ${
+                          className={`inline-flex items-center gap-1.5 px-2.5 py-1 rounded-md text-xs font-medium ${
                             session.status === 'completed'
-                              ? 'bg-green-900/30 text-green-400'
+                              ? 'bg-emerald-500/10 text-emerald-500'
                               : session.status === 'active'
-                              ? 'bg-blue-900/30 text-blue-400'
-                              : 'bg-red-900/30 text-red-400'
+                              ? 'bg-blue-500/10 text-blue-500'
+                              : 'bg-red-500/10 text-red-500'
                           }`}
                         >
+                          <div className={`w-1.5 h-1.5 rounded-full ${
+                            session.status === 'completed'
+                              ? 'bg-emerald-500'
+                              : session.status === 'active'
+                              ? 'bg-blue-500'
+                              : 'bg-red-500'
+                          }`} />
                           {session.status}
                         </span>
-                      </td>
-                      <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-300">
-                        {session.preferences.speaker2_voice_id ? 'Dual' : 'Single'}
-                      </td>
-                    </tr>
-                  ))}
-                </tbody>
-              </table>
+                      </div>
+                    </div>
+                  </CardContent>
+                </Card>
+              ))
             )}
           </div>
         )}
-      </div>
     </div>
   );
 };

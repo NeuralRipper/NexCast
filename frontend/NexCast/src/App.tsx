@@ -5,24 +5,22 @@ import { setAuthToken } from './services/api'
 import { SideBar } from './components/SideBar'
 import Playground from './pages/Playground'
 import SessionHistory from './pages/SessionHistory'
-import VoiceLibrary from './pages/VoiceLibrary'
-import Settings from './pages/Settings'
+import { About } from './pages/About'
 import './App.css'
 
 function AuthenticatedApp() {
   return (
     <BrowserRouter>
-      <div className="h-screen w-screen bg-gray-800 flex">
+      <div className="h-screen w-screen flex overflow-hidden">
         {/* Sidebar */}
         <SideBar />
 
         {/* Main Content */}
-        <main className="flex-1 overflow-y-auto">
+        <main className="flex-1 overflow-y-auto p-8">
           <Routes>
             <Route path="/playground" element={<Playground />} />
             <Route path="/history" element={<SessionHistory />} />
-            <Route path="/library" element={<VoiceLibrary />} />
-            <Route path="/settings" element={<Settings />} />
+            <Route path="/settings" element={<About />} />
             <Route path="/" element={<Navigate to="/playground" replace />} />
           </Routes>
         </main>

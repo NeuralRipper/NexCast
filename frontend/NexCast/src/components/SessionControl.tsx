@@ -1,3 +1,6 @@
+import { Card, CardHeader, CardTitle, CardContent } from '@/components/ui/card';
+import { Button } from '@/components/ui/button';
+
 interface SessionControlProps {
   isSessionActive: boolean;
   isLoading: boolean;
@@ -19,7 +22,6 @@ export const SessionControl = ({
   onStartSession,
   onEndSession,
 }: SessionControlProps) => {
-  // Format elapsed time as MM:SS
   const formatTime = (seconds: number): string => {
     const mins = Math.floor(seconds / 60);
     const secs = seconds % 60;
@@ -27,65 +29,65 @@ export const SessionControl = ({
   };
 
   return (
-    <div>
-      <div className="flex items-center justify-between mb-4">
-        <h2 className="text-xl font-semibold text-gray-100">Session Status</h2>
-        <span
-          className={`px-3 py-1 rounded-full text-sm font-medium ${
-            isSessionActive
-              ? 'bg-green-900/30 text-green-400'
-              : 'bg-gray-700 text-gray-400'
-          }`}
-        >
+    <Card>
+      <CardHeader className="flex-row items-center justify-between space-y-0">
+        <CardTitle className="text-xl font-semibold">Session Status</CardTitle>
+        <div className={`flex items-center gap-2 px-3 py-1 rounded-full text-xs font-medium ${
+          isSessionActive
+            ? 'bg-emerald-500/10 text-emerald-500'
+            : 'bg-muted text-muted-foreground'
+        }`}>
+          <div className={`w-2 h-2 rounded-full ${isSessionActive ? 'bg-emerald-500' : 'bg-muted-foreground'}`} />
           {isSessionActive ? 'Active' : 'Idle'}
-        </span>
-      </div>
-
-      {/* Session Info */}
-      {isSessionActive && (
-        <div className="grid grid-cols-4 gap-4 mb-4 text-center">
-          <div>
-            <p className="text-sm text-gray-400">Session ID</p>
-            <p className="text-2xl font-bold text-gray-100">{sessionId}</p>
-          </div>
-          <div>
-            <p className="text-sm text-gray-400">Duration</p>
-            <p className="text-2xl font-bold text-gray-100">{formatTime(elapsedTime)}</p>
-          </div>
-          <div>
-            <p className="text-sm text-gray-400">Frames</p>
-            <p className="text-2xl font-bold text-gray-100">{frameCount}</p>
-          </div>
-          <div>
-            <p className="text-sm text-gray-400">WebSocket</p>
-            <p className="text-2xl font-bold">
-              {isWebSocketConnected ? '🟢' : '🔴'}
-            </p>
-          </div>
         </div>
-      )}
+      </CardHeader>
 
-      {/* Control Buttons */}
-      <div className="flex gap-4">
+      <CardContent className="space-y-6">
+        {isSessionActive && (
+          <div className="grid grid-cols-4 gap-4">
+            <div className="space-y-1">
+              <p className="text-sm text-muted-foreground">Session ID</p>
+              <p className="text-2xl font-semibold">{sessionId}</p>
+            </div>
+            <div className="space-y-1">
+              <p className="text-sm text-muted-foreground">Duration</p>
+              <p className="text-2xl font-semibold font-mono">{formatTime(elapsedTime)}</p>
+            </div>
+            <div className="space-y-1">
+              <p className="text-sm text-muted-foreground">Frames</p>
+              <p className="text-2xl font-semibold">{frameCount}</p>
+            </div>
+            <div className="space-y-1">
+              <p className="text-sm text-muted-foreground">Connection</p>
+              <p className="text-2xl">
+                {isWebSocketConnected ? '🟢' : '🔴'}
+              </p>
+            </div>
+          </div>
+        )}
+
         {!isSessionActive ? (
-          <button
+          <Button
             onClick={onStartSession}
             disabled={isLoading}
-            className="flex-1 bg-gray-700 hover:bg-gray-600 text-gray-50 font-medium py-3 px-6 rounded-lg disabled:opacity-50 disabled:cursor-not-allowed transition"
+            size="lg"
+            className="w-full"
           >
             {isLoading ? 'Starting...' : 'Start Commentary Session'}
-          </button>
+          </Button>
         ) : (
-          <button
+          <Button
             onClick={onEndSession}
             disabled={isLoading}
-            className="flex-1 bg-red-600 hover:bg-red-700 text-white font-medium py-3 px-6 rounded-lg disabled:opacity-50 disabled:cursor-not-allowed transition"
+            size="lg"
+            variant="destructive"
+            className="w-full"
           >
             {isLoading ? 'Ending...' : 'End Session'}
-          </button>
+          </Button>
         )}
-      </div>
-    </div>
+      </CardContent>
+    </Card>
   );
 };
 
