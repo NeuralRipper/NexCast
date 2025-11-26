@@ -1,5 +1,6 @@
 import { NavLink } from 'react-router-dom';
 import { Play, History, Settings } from 'lucide-react';
+import { Card } from '@/components/ui/card';
 
 export const SideBar = () => {
   const navItems = [
@@ -9,7 +10,7 @@ export const SideBar = () => {
   ];
 
   return (
-    <aside className="w-64 border-r border-gray-700 bg-gray-800 h-screen flex flex-col flex-shrink-0">
+    <Card className="w-64 bg-gray-800 border-gray-700 h-screen flex flex-col flex-shrink-0 rounded-none border-l-0 border-t-0 border-b-0">
       {/* Logo/Brand */}
       <div className="border-b border-gray-700 p-6">
         <h1 className="text-4xl font-bold text-gray-400 text-center">NexCast</h1>
@@ -18,7 +19,7 @@ export const SideBar = () => {
 
       {/* Navigation */}
       <nav className="flex-1 p-4">
-        <ul className="space-y-1">
+        <ul className="space-y-2">
           {navItems.map((item) => {
             const Icon = item.Icon;
             return (
@@ -26,10 +27,10 @@ export const SideBar = () => {
                 <NavLink
                   to={item.path}
                   className={({ isActive }) =>
-                    `flex items-center gap-3 px-4 py-2.5 rounded-lg text-xl font-medium transition-colors no-underline ${
+                    `flex items-center gap-3 px-4 py-2.5 rounded-lg text-sm font-medium transition-all no-underline ${
                       isActive
-                        ? 'bg-primary text-primary-foreground'
-                        : 'text-muted-foreground hover:bg-accent hover:text-accent-foreground'
+                        ? 'bg-blue-600 text-white'
+                        : 'text-gray-400 hover:bg-gray-700 hover:text-white'
                     }`
                   }
                 >
@@ -43,10 +44,10 @@ export const SideBar = () => {
       </nav>
 
       {/* Footer */}
-      <div className="px-6 py-4 border-t border-border">
-        <p className="text-xs text-muted-foreground">© 2025 NexCast</p>
+      <div className="px-6 py-4 border-t border-gray-700">
+        <p className="text-xs text-gray-500">© 2025 NexCast</p>
       </div>
-    </aside>
+    </Card>
   );
 };
 
