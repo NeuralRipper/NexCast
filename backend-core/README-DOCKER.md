@@ -127,7 +127,7 @@ aws ecr get-login-password --region $REGION | \
 
 # 3. Get secrets and create .env
 SECRET_JSON=$(aws secretsmanager get-secret-value \
-    --secret-id nexcast-secrets \
+    --secret-id NexCastSecrets \
     --region $REGION \
     --query SecretString \
     --output text)

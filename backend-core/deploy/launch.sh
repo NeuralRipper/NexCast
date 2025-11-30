@@ -32,7 +32,7 @@ aws ecr get-login-password --region "$REGION" | \
 # 4. Pull secrets from AWS Secrets Manager
 echo "🔐 Fetching secrets from AWS Secrets Manager..."
 SECRET_JSON=$(aws secretsmanager get-secret-value \
-    --secret-id nexcast-secrets \
+    --secret-id NexCastSecrets \
     --region "$REGION" \
     --query SecretString \
     --output text)

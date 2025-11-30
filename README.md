@@ -133,7 +133,7 @@ Real-time AI-powered gaming commentary using multi-speaker TTS with WebSocket au
 
 **Store all sensitive credentials in one secret:**
 
-1. **Create secret:** `nexcast-secrets`
+1. **Create secret:** `NexCastSecrets`
 2. **Add key-value pairs:**
    ```json
    {
