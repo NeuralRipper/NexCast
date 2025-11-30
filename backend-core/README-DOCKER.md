@@ -129,7 +129,7 @@ backend-core/
 
 ---
 
-## 🔑 AWS Secrets Manager Keys
+## AWS Secrets Manager Keys
 
 Add these to your `nexcast-secrets` secret:
 
