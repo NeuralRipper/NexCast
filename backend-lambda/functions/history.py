@@ -64,12 +64,30 @@ def handler(event, context):
 
 
 def list_sessions(user_sub, event):
-    """List all sessions for a user"""
+    """List all sessions for a user with pagination"""
     cors_headers = get_cors_headers(event)
     conn = None
     try:
+        # Get pagination parameters from query string
+        query_params = event.get('queryStringParameters') or {}
+        limit = int(query_params.get('limit', 10))
+        offset = int(query_params.get('offset', 0))
+
+        # Validate pagination params
+        limit = max(1, min(limit, 100))  # Between 1 and 100
+        offset = max(0, offset)
+
         conn = get_db_connection()
         cursor = conn.cursor()
+
+        # Get total count for pagination metadata
+        cursor.execute("""
+            SELECT COUNT(DISTINCT s.id)
+            FROM sessions s
+            JOIN users u ON u.id = s.user_id
+            WHERE u.cognito_sub = %s
+        """, (user_sub,))
+        total_count = cursor.fetchone()['count']
 
         cursor.execute("""
             SELECT s.id, s.started_at, s.ended_at, s.status, s.frame_count,
@@ -82,7 +100,8 @@ def list_sessions(user_sub, event):
             GROUP BY s.id, s.started_at, s.ended_at, s.status, s.frame_count,
                      s.voice, s.commentary_style, s.speaking_rate, s.pitch, s.volume
             ORDER BY s.started_at DESC
-        """, (user_sub,))
+            LIMIT %s OFFSET %s
+        """, (user_sub, limit, offset))
 
         sessions = []
         for row in cursor.fetchall():
@@ -111,7 +130,15 @@ def list_sessions(user_sub, event):
         return {
             'statusCode': 200,
             'headers': cors_headers,
-            'body': json.dumps({'sessions': sessions})
+            'body': json.dumps({
+                'sessions': sessions,
+                'pagination': {
+                    'total': total_count,
+                    'limit': limit,
+                    'offset': offset,
+                    'has_more': (offset + limit) < total_count
+                }
+            })
         }
     except Exception as e:
         return {

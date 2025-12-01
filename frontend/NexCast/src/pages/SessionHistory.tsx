@@ -2,22 +2,31 @@ import { useState, useEffect } from 'react';
 import { Card, CardContent } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
 import { api, type Session } from '../services/api';
+import { ChevronLeft, ChevronRight } from 'lucide-react';
+
+const ITEMS_PER_PAGE = 10;
 
 export const SessionHistory = () => {
   const [sessions, setSessions] = useState<Session[]>([]);
   const [isLoading, setIsLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
+  const [currentPage, setCurrentPage] = useState(1);
+  const [totalSessions, setTotalSessions] = useState(0);
+  const [hasMore, setHasMore] = useState(false);
 
   useEffect(() => {
     loadSessions();
-  }, []);
+  }, [currentPage]);
 
   const loadSessions = async () => {
     try {
       setIsLoading(true);
       setError(null);
-      const response = await api.getHistory();
+      const offset = (currentPage - 1) * ITEMS_PER_PAGE;
+      const response = await api.getHistory({ limit: ITEMS_PER_PAGE, offset });
       setSessions(response.sessions);
+      setTotalSessions(response.pagination.total);
+      setHasMore(response.pagination.has_more);
     } catch (err) {
       const errorMessage =
         err instanceof Error ? err.message : 'Failed to load session history';
@@ -27,6 +36,16 @@ export const SessionHistory = () => {
       setIsLoading(false);
     }
   };
+
+  const handlePreviousPage = () => {
+    setCurrentPage((prev) => Math.max(1, prev - 1));
+  };
+
+  const handleNextPage = () => {
+    setCurrentPage((prev) => prev + 1);
+  };
+
+  const totalPages = Math.ceil(totalSessions / ITEMS_PER_PAGE);
 
   const formatDate = (dateString: string): string => {
     const date = new Date(dateString);
@@ -142,6 +161,41 @@ export const SessionHistory = () => {
                 </Card>
               ))
             )}
+          </div>
+        )}
+
+        {/* Pagination */}
+        {!isLoading && !error && totalSessions > 0 && (
+          <div className="mt-6 flex items-center justify-between border-t border-gray-700 pt-4">
+            <div className="text-sm text-gray-400">
+              Showing {Math.min((currentPage - 1) * ITEMS_PER_PAGE + 1, totalSessions)} -{' '}
+              {Math.min(currentPage * ITEMS_PER_PAGE, totalSessions)} of {totalSessions} sessions
+            </div>
+            <div className="flex items-center gap-2">
+              <Button
+                onClick={handlePreviousPage}
+                disabled={currentPage === 1}
+                variant="outline"
+                size="sm"
+                className="border-gray-600 text-white hover:bg-gray-700 disabled:opacity-50 disabled:cursor-not-allowed"
+              >
+                <ChevronLeft className="h-4 w-4 mr-1" />
+                Previous
+              </Button>
+              <div className="text-sm text-gray-400 px-3">
+                Page {currentPage} of {totalPages}
+              </div>
+              <Button
+                onClick={handleNextPage}
+                disabled={!hasMore}
+                variant="outline"
+                size="sm"
+                className="border-gray-600 text-white hover:bg-gray-700 disabled:opacity-50 disabled:cursor-not-allowed"
+              >
+                Next
+                <ChevronRight className="h-4 w-4 ml-1" />
+              </Button>
+            </div>
           </div>
         )}
     </div>
