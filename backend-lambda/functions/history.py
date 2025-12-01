@@ -82,7 +82,7 @@ def list_sessions(user_sub, event):
 
         # Get total count for pagination metadata
         cursor.execute("""
-            SELECT COUNT(DISTINCT s.id)
+            SELECT COUNT(DISTINCT s.id) as count
             FROM sessions s
             JOIN users u ON u.id = s.user_id
             WHERE u.cognito_sub = %s
