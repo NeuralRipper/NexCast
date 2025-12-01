@@ -1,4 +1,6 @@
-![nexcast-arch](https://github.com/user-attachments/assets/b8311ef0-b24c-4cf9-a915-8c2c21011227)
+
+<img width="4975" height="2461" alt="NexCast" src="https://github.com/user-attachments/assets/72bffde9-0802-4c9a-925e-17f5e1e24644" />
+
 
 # NexCast
 
