@@ -1,6 +1,5 @@
 
-<img width="4975" height="2461" alt="NexCast" src="https://github.com/user-attachments/assets/72bffde9-0802-4c9a-925e-17f5e1e24644" />
-
+<img width="4975" height="2461" alt="NexCast" src="https://github.com/user-attachments/assets/d1228b45-2c3b-4ffa-b039-972ccfea2d0e" />
 
 # NexCast
 
