@@ -61,6 +61,21 @@ export interface SessionDetail extends Session {
   commentaries: Commentary[];
 }
 
+export interface PaginationParams {
+  limit?: number;
+  offset?: number;
+}
+
+export interface PaginatedResponse<T> {
+  sessions: T[];
+  pagination: {
+    total: number;
+    limit: number;
+    offset: number;
+    has_more: boolean;
+  };
+}
+
 /**
  * API Service Methods
  */
@@ -90,10 +105,15 @@ export const api = {
   },
 
   /**
-   * Get list of all sessions for current user
+   * Get list of all sessions for current user with pagination
    */
-  async getHistory(): Promise<{ sessions: Session[] }> {
-    const response = await apiClient.get('/history/list');
+  async getHistory(params?: PaginationParams): Promise<PaginatedResponse<Session>> {
+    const queryParams = new URLSearchParams();
+    if (params?.limit) queryParams.append('limit', params.limit.toString());
+    if (params?.offset) queryParams.append('offset', params.offset.toString());
+
+    const url = `/history/list${queryParams.toString() ? `?${queryParams.toString()}` : ''}`;
+    const response = await apiClient.get(url);
     return response.data;
   },
 
