@@ -1,4 +1,6 @@
-[![NexCast Demo](https://github.com/user-attachments/assets/2fdea7e7-1f46-4f6f-a0fd-ea7e35d8510f)](https://youtu.be/mAvNDuDRPXE)  
+
+[![NexCast Demo](https://github.com/user-attachments/assets/2fdea7e7-1f46-4f6f-a0fd-ea7e35d8510f)](https://youtu.be/mAvNDuDRPXE)
+[![Watch Demo](https://img.shields.io/badge/▶️_Watch-Demo_Video-red?style=for-the-badge&logo=youtube)](https://youtu.be/mAvNDuDRPXE)
 
 # NexCast
 
