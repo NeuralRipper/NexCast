@@ -1,11 +1,9 @@
-
-<img width="4975" height="2461" alt="NexCast" src="https://github.com/user-attachments/assets/d1228b45-2c3b-4ffa-b039-972ccfea2d0e" />
+[![NexCast Demo](https://github.com/user-attachments/assets/2fdea7e7-1f46-4f6f-a0fd-ea7e35d8510f)](https://youtu.be/mAvNDuDRPXE)  
 
 # NexCast
 
 Real-time AI-powered gaming commentary platform using multi-speaker text-to-speech with WebSocket audio streaming.
-
-
+<img width="4975" height="2461" alt="NexCast" src="https://github.com/user-attachments/assets/d1228b45-2c3b-4ffa-b039-972ccfea2d0e" />
 
 ## Overview
 
